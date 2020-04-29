@@ -1,2 +1,2 @@
-# Dictionary
-Command-line tool to look up definition of words and synonyms
+# MyDictionary
+Command-line tool for looking up the definition of words, or the synonyms of them
