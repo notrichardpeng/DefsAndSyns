@@ -1,6 +1,24 @@
 import requests
 from bs4 import BeautifulSoup
 
+def Definition(word):
+    raw = requests.get('https://www.dictionary.com/browse/' + word).content
+    soup = BeautifulSoup(raw, 'lxml')
+    targetDiv = soup.find('div', {'class': 'css-1urpfgu e16867sm0'})
+
+    allTypes = targetDiv.find_all('span', {'class': 'luna-pos'})
+    allContents = targetDiv.find_all('div', {'class': 'css-1o58fj8 e1hk9ate4'})
+
+    for t in range(min(2, len(allTypes))):
+        type = allTypes[t].text if allTypes[t].text[-1] != ',' else allTypes[t].text[:-1]
+        content = allContents[t]
+        defs = content.find_all('div', value=True)
+
+        print(type)
+        for n in range(min(2, len(defs))):
+            print(str(n + 1) + '. ' + defs[n].find('span').text)
+        print()
+
 # main loop
 while True:
     s = input('dict: ')
@@ -16,18 +34,9 @@ while True:
     word = parts[1]
 
     if command == 'def':
-        raw = requests.get('https://www.dictionary.com/browse/' + word).content
-        soup = BeautifulSoup(raw, 'lxml')
-
-        wordTypeElem = soup.find_all('span', {'class':'luna-pos'})[0]
-        type = wordTypeElem.text if wordTypeElem.text[-1] != ',' else wordTypeElem.text[:-1]
-
-        contentDiv = soup.find('div', {'class':'css-1o58fj8 e1hk9ate4'})
-        print(contentDiv.find('div', {'value':'1'}).find('span').text)
+        Definition(word)
     elif command == 'syn':
         raw = requests.get('https://www.thesaurus.com/browse/' + word).content
         soup = BeautifulSoup(raw, 'lxml')
     else:
         print('invalid syntax')
-
-    print()
