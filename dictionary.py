@@ -14,6 +14,11 @@ def Definition(word, maxTypeCount, maxDefCount):
     allTypes = targetDiv.find_all('span', {'class': 'luna-pos'})
     allContents = targetDiv.find_all('div', {'class': 'css-1o58fj8 e1hk9ate4'})
 
+    if not allTypes:
+        print('no results found for ' + word)
+        print('')
+        return
+
     for t in range(min(maxTypeCount, len(allTypes))):
         type = allTypes[t].text if allTypes[t].text[-1] != ',' else allTypes[t].text[:-1]
         content = allContents[t]
@@ -57,18 +62,20 @@ def Synonym(word, maxSynCount):
             soup = BeautifulSoup(driver.page_source, 'lxml')
 
             currentActive = soup.find('li', {'class':'active-postab css-auzxq6-PosTab e9i53te0'})
-            print(str(counter) + '. ['+ currentActive.find('em').text + '] ' + currentActive.find('strong').text, end=':')
+            print(str(counter) + '. ['+ currentActive.find('em').text + '] ' + currentActive.find('strong').text, end=': ')
             listOfSyn = soup.find('ul', {'class':'css-17d6qyx-WordGridLayoutBox et6tpn80'}).find_all('li')
 
-            for i in range(min(maxSynCount, len(listOfSyn))):
-                print(' ' + listOfSyn[i].find('a').text, end="")
-            print('\n')
+            n = min(maxSynCount, len(listOfSyn))
+            for i in range(n):
+                if i < n-1: print(listOfSyn[i].find('a').text, end=" | ")
+                else: print(listOfSyn[i].find('a').text)
 
             counter += 1
             try:
                 nextButton.click()
             except:
                 break
+        print('')
     else:
         variations = None
         try:
@@ -88,14 +95,14 @@ def Synonym(word, maxSynCount):
             listOfSyn = driver.find_element_by_css_selector("ul[class='css-17d6qyx-WordGridLayoutBox et6tpn80']")
             listOfSyn = listOfSyn.find_elements_by_tag_name('li')
 
-            print(str(counter) + '. [' + reason + '] ' + meaning, end=':')
-            for i in range(min(maxSynCount, len(listOfSyn))):
-                print(' ' + listOfSyn[i].find_element_by_tag_name('a').text, end='')
+            print(str(counter) + '. [' + reason + '] ' + meaning, end=': ')
+            n = min(maxSynCount, len(listOfSyn))
+            for i in range(n):
+                if i < n-1: print(listOfSyn[i].find_element_by_tag_name('a').text, end=' | ')
+                else: print(listOfSyn[i].find_element_by_tag_name('a').text)
             counter += 1
 
-        print('\n')
-
-
+        print('')
 
 
 # main loop
@@ -112,9 +119,14 @@ while True:
     command = parts[0]
     word = parts[1]
 
+    if(';' in word):
+        print('no results found for ' + word)
+        print('')
+        continue
+
     if command == 'def':
         Definition(word, 2, 2)
     elif command == 'syn':
         Synonym(word, 2)
     else:
-        print('invalid syntax')
+        print('unknown command\n')
