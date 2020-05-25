@@ -6,9 +6,21 @@ root.geometry('600x600')
 
 
 
+def concatenate(word, list_of_lines):
+    ret = word + '\n\n'
+    for s in list_of_lines:
+        ret += s
+        ret += '\n'
+    if ret[-1] == '\n': ret = ret[:-1]
+    return ret
+
 def search(input, output):
-    res = input.get()
-    output.set(res)
+    word = input.get()
+    strs = dictionary.definition(word, 2, 2)
+
+    s = concatenate(word, strs)
+
+    output.set(s)
     input.delete(0, END)
 
 def on_frame_configure(canvas):
@@ -16,6 +28,9 @@ def on_frame_configure(canvas):
 
 def frame_size(event):
     output_canvas.itemconfig(canvas_frame, width=event.width)
+    out_message.configure(width=event.width-scroll.winfo_width())
+
+
 
 main_frame = Frame(root, height=400, bg='black')
 main_frame.pack(fill=X)
@@ -30,7 +45,8 @@ output_canvas.configure(yscrollcommand=scroll.set)
 canvas_frame = output_canvas.create_window((0,0), window=output_frame, anchor="nw")
 
 output = StringVar()
-outmessage = Message(output_frame, textvariable=output, anchor=NW, width=580).pack(anchor=NW, fill=X)
+out_message = Message(output_frame, textvariable=output, anchor=NW)
+out_message.pack(anchor=NW, fill=X)
 
 
 
@@ -52,4 +68,3 @@ output_frame.bind("<Configure>", lambda event: on_frame_configure(output_canvas)
 output_canvas.bind("<Configure>", frame_size)
 
 root.mainloop()
-outmessage['width'] = output_frame.winfo_width()

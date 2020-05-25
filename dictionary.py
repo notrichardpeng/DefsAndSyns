@@ -17,7 +17,7 @@ def definition(w, max_type_count, max_def_count):
 
     if not all_types:
         ret.append('no results found for ' + w)
-        return
+        return ret
 
     n = min(max_type_count, len(all_types))
     for t in range(n):
