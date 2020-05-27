@@ -3,11 +3,11 @@ import dictionary
 
 root = Tk()
 root.geometry('600x600')
-
+mode = 'definition'
 
 
 def concatenate(word, list_of_lines):
-    ret = word + '\n\n'
+    ret = 'definitions of ' + word + '\n\n' if mode == 'definition' else 'synonyms of ' + word + '\n\n'
     for s in list_of_lines:
         ret += s
         ret += '\n'
@@ -16,7 +16,7 @@ def concatenate(word, list_of_lines):
 
 def search(input, output):
     word = input.get()
-    strs = dictionary.definition(word, 2, 2)
+    strs = dictionary.definition(word, 2, 2) if mode == 'definition' else dictionary.synonym(word, 2)
 
     s = concatenate(word, strs)
 
@@ -29,6 +29,18 @@ def on_frame_configure(canvas):
 def frame_size(event):
     output_canvas.itemconfig(canvas_frame, width=event.width)
     out_message.configure(width=event.width-scroll.winfo_width())
+
+def synonym_mode(def_button, syn_button):
+    global mode
+    mode = 'synonym'
+    def_button['state'] = 'normal'
+    syn_button['state'] = 'disabled'
+
+def definition_mode(def_button, syn_button):
+    global mode
+    mode = 'definition'
+    def_button['state'] = 'disabled'
+    syn_button['state'] = 'normal'
 
 
 
@@ -57,8 +69,10 @@ search_button.pack(pady=5)
 
 search_options = Frame(root, bd=0)
 search_options.pack(side=TOP, pady=5)
-def_button = Button(search_options, text='Definition')
-syn_button = Button(search_options, text='Synonym')
+
+def_button, syn_button = None, None
+def_button = Button(search_options, text='Definition', command=lambda : definition_mode(def_button, syn_button), state='disabled')
+syn_button = Button(search_options, text='Synonym', command=lambda : synonym_mode(def_button, syn_button))
 def_button.pack(side=LEFT, padx=5)
 syn_button.pack(side=LEFT, padx=5)
 
@@ -67,4 +81,7 @@ root.bind('<Return>', (lambda event: search(input, output)))
 output_frame.bind("<Configure>", lambda event: on_frame_configure(output_canvas))
 output_canvas.bind("<Configure>", frame_size)
 
+
+
+dictionary.initialize()
 root.mainloop()

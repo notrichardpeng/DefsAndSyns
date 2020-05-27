@@ -12,6 +12,10 @@ def definition(w, max_type_count, max_def_count):
     soup = BeautifulSoup(raw, 'lxml')
     target_div = soup.find('div', {'class': 'css-1urpfgu e16867sm0'})
 
+    if not target_div:
+        ret.append('no results found for ' + w)
+        return ret
+
     all_types = target_div.find_all('span', {'class': 'luna-pos'})
     all_contents = target_div.find_all('div', {'class': 'css-1o58fj8 e1hk9ate4'})
 
@@ -27,7 +31,11 @@ def definition(w, max_type_count, max_def_count):
 
         ret.append(type)
         for d in range(min(max_def_count, len(defs))):
-            ret.append(str(d + 1) + '. ' + defs[d].find('span').text)
+            spans = defs[d].find_all('span', {'class' : 'one-click-content css-1p89gle e1q3nk1v4'})
+            this_span = ''
+            for s in spans:
+                this_span += s.text + ' '
+            ret.append(str(d + 1) + '. '+ this_span)
 
         if t < n-1:
             ret.append('')
@@ -69,9 +77,9 @@ def synonym(w, max_syn_count):
             variations = driver.find_element_by_css_selector("ul[class='css-z1dbbs-TabList e9i53te2']")
             variations = variations.find_elements_by_tag_name('li')
         except:
-            print('There are no synonyms for this word')
-            print('\n')
-            return
+            ret.append('there are no synonyms for this word')
+            ret.append('')
+            return ret
 
         counter = 1
         for v in variations:
