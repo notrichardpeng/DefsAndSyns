@@ -6,8 +6,7 @@ from selenium import webdriver
 
 driver = None
 
-def definition(w, max_type_count, max_def_count):
-    ret = []
+def definition(w, max_type_count, max_def_count, ret):
     raw = requests.get('https://www.dictionary.com/browse/' + w).content
     soup = BeautifulSoup(raw, 'lxml')
     target_div = soup.find('div', {'class': 'css-1urpfgu e16867sm0'})
@@ -42,8 +41,7 @@ def definition(w, max_type_count, max_def_count):
 
     return ret
 
-def synonym(w, max_syn_count):
-    ret = []
+def synonym(w, max_syn_count, ret):
     driver.get('https://www.thesaurus.com/browse/' + w)
     next_button = None
 
@@ -110,6 +108,6 @@ def initialize():
     try:
         global driver
         driver = webdriver.Chrome(os.path.dirname(__file__) + '\\chromedriver.exe', options=driver_opt)
-    except:
+    except Exception:
         print('Cannot locate chromedriver.exe in the directory of this file')
         sys.exit(0)

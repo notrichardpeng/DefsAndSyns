@@ -1,5 +1,6 @@
 from tkinter import *
 import dictionary
+import threading
 
 root = Tk()
 root.geometry('600x600')
@@ -16,8 +17,14 @@ def concatenate(word, list_of_lines):
 
 def search(input, output):
     word = input.get()
-    strs = dictionary.definition(word, 2, 2) if mode == 'definition' else dictionary.synonym(word, 2)
+    strs = []
 
+    t = None
+    if mode == 'definition': t = threading.Thread(target=dictionary.definition, args=(word, 2, 2, strs))
+    else: t = threading.Thread(target=dictionary.synonym, args=(word, 2, strs))
+
+    t.start()
+    t.join()
     s = concatenate(word, strs)
 
     output.set(s)
