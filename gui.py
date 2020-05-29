@@ -1,14 +1,15 @@
 from tkinter import *
 import dictionary
 import threading
+import time
 
 root = Tk()
 root.geometry('600x600')
-mode = 'definition'
+mode = 'definitions'
 
 
 def concatenate(word, list_of_lines):
-    ret = 'definitions of ' + word + '\n\n' if mode == 'definition' else 'synonyms of ' + word + '\n\n'
+    ret = mode + ' of ' + word + '\n\n'
     for s in list_of_lines:
         ret += s
         ret += '\n'
@@ -17,18 +18,14 @@ def concatenate(word, list_of_lines):
 
 def search(input, output):
     word = input.get()
-    strs = []
-
-    t = None
-    if mode == 'definition': t = threading.Thread(target=dictionary.definition, args=(word, 2, 2, strs))
-    else: t = threading.Thread(target=dictionary.synonym, args=(word, 2, strs))
-
-    t.start()
-    t.join()
-    s = concatenate(word, strs)
-
-    output.set(s)
     input.delete(0, END)
+    output.set('searching for ' + mode + ' of "' + word + '"...')
+
+    if mode == 'definitions': lines = dictionary.definition(word, 2, 2)
+    else: lines = dictionary.synonym(word, 2)
+
+    s = concatenate(word, lines)
+    output.set(s)
 
 def on_frame_configure(canvas):
     canvas.configure(scrollregion=canvas.bbox('all'))
@@ -39,13 +36,13 @@ def frame_size(event):
 
 def synonym_mode(def_button, syn_button):
     global mode
-    mode = 'synonym'
+    mode = 'synonyms'
     def_button['state'] = 'normal'
     syn_button['state'] = 'disabled'
 
 def definition_mode(def_button, syn_button):
     global mode
-    mode = 'definition'
+    mode = 'definitions'
     def_button['state'] = 'disabled'
     syn_button['state'] = 'normal'
 
@@ -71,7 +68,7 @@ out_message.pack(anchor=NW, fill=X)
 
 input = Entry(root, width=35)
 input.pack(pady=5)
-search_button = Button(root, text='Search', command=lambda : search(input, output))
+search_button = Button(root, text='Search', command=threading.Thread(target=search, args=(input, output)).start)
 search_button.pack(pady=5)
 
 search_options = Frame(root, bd=0)
@@ -84,7 +81,7 @@ def_button.pack(side=LEFT, padx=5)
 syn_button.pack(side=LEFT, padx=5)
 
 
-root.bind('<Return>', (lambda event: search(input, output)))
+root.bind('<Return>', (lambda event: threading.Thread(target=search, args=(input, output)).start()))
 output_frame.bind("<Configure>", lambda event: on_frame_configure(output_canvas))
 output_canvas.bind("<Configure>", frame_size)
 
