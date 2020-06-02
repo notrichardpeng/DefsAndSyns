@@ -1,4 +1,5 @@
 import requests
+import time
 import os
 import sys
 from bs4 import BeautifulSoup
@@ -47,9 +48,17 @@ def synonym(w, max_syn_count):
     driver.get('https://www.thesaurus.com/browse/' + w)
     next_button = None
 
+    #Closes ad pop ups
+    try:
+        close_ad = driver.find_element_by_css_selector("button[aria-label='Dismiss Banner']")
+    except Exception:
+        pass
+    if close_ad: close_ad.click()
+
+
     try:
         next_button = driver.find_element_by_css_selector("button[href='#']")
-    except:
+    except Exception:
         pass
 
     if next_button:
@@ -67,16 +76,17 @@ def synonym(w, max_syn_count):
                 else: curr_res += list_of_syn[i].find('a').text
 
             counter += 1
+            ret.append(curr_res)
+
             try:
                 next_button.click()
-            except:
+            except Exception:
                 break
-            ret.append(curr_res)
     else:
         try:
             variations = driver.find_element_by_css_selector("ul[class='css-z1dbbs-TabList e9i53te2']")
             variations = variations.find_elements_by_tag_name('li')
-        except:
+        except Exception:
             ret.append('there are no synonyms for this word')
             ret.append('')
             return ret
@@ -106,6 +116,7 @@ def initialize():
     driver_opt.add_argument('--headless')
     driver_opt.add_argument("--proxy-server='direct://'")
     driver_opt.add_argument("--proxy-bypass-list=*")
+    driver_opt.add_argument('--no-proxy-server')
 
     try:
         global driver
@@ -113,3 +124,7 @@ def initialize():
     except Exception:
         print('Cannot locate chromedriver.exe in the directory of this file')
         sys.exit(0)
+
+def quit_browser():
+    global driver
+    driver.quit()

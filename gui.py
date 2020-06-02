@@ -36,6 +36,10 @@ def set_num_of_results(label, slider):
 def on_frame_configure(canvas):
     canvas.configure(scrollregion=canvas.bbox('all'))
 
+def on_close():
+    dictionary.quit_browser()
+    root.destroy()
+
 def frame_size(event):
     output_canvas.itemconfig(canvas_frame, width=event.width)
     out_message.configure(width=event.width-scroll.winfo_width())
@@ -99,4 +103,5 @@ output_canvas.bind("<Configure>", frame_size)
 
 
 dictionary.initialize()
+root.protocol("WM_DELETE_WINDOW", on_close)
 root.mainloop()

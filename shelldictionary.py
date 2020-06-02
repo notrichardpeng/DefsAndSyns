@@ -7,6 +7,7 @@ dictionary.initialize()
 while True:
     s = input('dict: ')
     if s == 'quit()':
+        dictionary.quit_browser()
         break
 
     parts = s.split(' ')
@@ -25,7 +26,7 @@ while True:
         out = dictionary.definition(word, 2, 2)
         for o in out: print(o)
     elif command == 'syn':
-        out = dictionary.synonym(word, 2)
+        out = dictionary.synonym(word, 3)
         for o in out: print(o)
     else:
         print('unknown command')
