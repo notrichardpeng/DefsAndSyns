@@ -6,7 +6,7 @@ import time
 root = Tk()
 root.geometry('600x600')
 mode = 'definitions'
-
+num_of_results = 1
 
 def concatenate(word, list_of_lines):
     ret = mode + ' of ' + word + '\n\n'
@@ -17,15 +17,21 @@ def concatenate(word, list_of_lines):
     return ret
 
 def search(input, output):
+    global num_of_results
     word = input.get()
     input.delete(0, END)
     output.set('searching for ' + mode + ' of "' + word + '"...')
 
-    if mode == 'definitions': lines = dictionary.definition(word, 2, 2)
-    else: lines = dictionary.synonym(word, 2)
+    if mode == 'definitions': lines = dictionary.definition(word, 5, num_of_results)
+    else: lines = dictionary.synonym(word, num_of_results)
 
     s = concatenate(word, lines)
     output.set(s)
+
+def set_num_of_results(label, slider):
+    global num_of_results
+    num_of_results = slider.get()
+    label.config(text="Number of Results: " + str(num_of_results))
 
 def on_frame_configure(canvas):
     canvas.configure(scrollregion=canvas.bbox('all'))
@@ -76,10 +82,15 @@ search_options.pack(side=TOP, pady=5)
 
 def_button, syn_button = None, None
 def_button = Button(search_options, text='Definition', command=lambda : definition_mode(def_button, syn_button), state='disabled')
-syn_button = Button(search_options, text='Synonym', command=lambda : synonym_mode(def_button, syn_button))
+syn_button = Button(search_options, text='Synonym', command=lambda: synonym_mode(def_button, syn_button))
 def_button.pack(side=LEFT, padx=5)
 syn_button.pack(side=LEFT, padx=5)
 
+results_num_label = Label(root, text="Number of Results: 1")
+results_num_label.pack(pady=2)
+results_num_slider = Scale(root, from_=1, to=5, orient=HORIZONTAL, showvalue=0, \
+    command=lambda event: set_num_of_results(results_num_label, results_num_slider))
+results_num_slider.pack()
 
 root.bind('<Return>', (lambda event: threading.Thread(target=search, args=(input, output)).start()))
 output_frame.bind("<Configure>", lambda event: on_frame_configure(output_canvas))
