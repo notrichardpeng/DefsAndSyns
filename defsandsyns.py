@@ -4,9 +4,11 @@ import threading
 import time
 
 root = Tk()
+root.title('Defs and Syns')
 root.geometry('600x600')
 mode = 'definitions'
 num_of_results = 1
+is_searching = False
 
 def concatenate(word, list_of_lines):
     ret = mode + ' of ' + word + '\n\n'
@@ -17,6 +19,12 @@ def concatenate(word, list_of_lines):
     return ret
 
 def search(input, output):
+
+    global is_searching
+    if is_searching:
+        return
+    is_searching = True
+
     global num_of_results
     word = input.get()
     input.delete(0, END)
@@ -27,6 +35,8 @@ def search(input, output):
 
     s = concatenate(word, lines)
     output.set(s)
+
+    is_searching = False
 
 def set_num_of_results(label, slider):
     global num_of_results
@@ -84,7 +94,6 @@ search_button.pack(pady=5)
 search_options = Frame(root, bd=0)
 search_options.pack(side=TOP, pady=5)
 
-def_button, syn_button = None, None
 def_button = Button(search_options, text='Definition', command=lambda : definition_mode(def_button, syn_button), state='disabled')
 syn_button = Button(search_options, text='Synonym', command=lambda: synonym_mode(def_button, syn_button))
 def_button.pack(side=LEFT, padx=5)

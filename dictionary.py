@@ -51,10 +51,9 @@ def synonym(w, max_syn_count):
     #Closes ad pop ups
     try:
         close_ad = driver.find_element_by_css_selector("button[aria-label='Dismiss Banner']")
+        close_ad.click()
     except Exception:
         pass
-    if close_ad: close_ad.click()
-
 
     try:
         next_button = driver.find_element_by_css_selector("button[href='#']")
@@ -76,7 +75,7 @@ def synonym(w, max_syn_count):
                 else: curr_res += list_of_syn[i].find('a').text
 
             counter += 1
-            ret.append(curr_res)
+            ret.append(curr_res + '\n')
 
             try:
                 next_button.click()
