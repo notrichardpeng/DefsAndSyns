@@ -88,7 +88,7 @@ out_message.pack(anchor=NW, fill=X)
 
 input = Entry(root, width=35)
 input.pack(pady=5)
-search_button = Button(root, text='Search', command=threading.Thread(target=search, args=(input, output)).start)
+search_button = Button(root, text='Search', command= lambda : threading.Thread(target=search, args=(input, output)).start())
 search_button.pack(pady=5)
 
 search_options = Frame(root, bd=0)

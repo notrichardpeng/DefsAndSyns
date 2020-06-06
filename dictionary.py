@@ -105,7 +105,7 @@ def synonym(w, max_syn_count):
                 if i < n-1: curr_res += list_of_syn[i].find_element_by_tag_name('a').text + ' | '
                 else: curr_res += list_of_syn[i].find_element_by_tag_name('a').text
             counter += 1
-            ret.append(curr_res)
+            ret.append(curr_res + '\n')
 
     return ret
 
