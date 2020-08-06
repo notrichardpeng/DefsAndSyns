@@ -63,9 +63,9 @@ def synonym(w, max_syn_count):
     if next_button:
         counter = 1
         while next_button:
-            soup = BeautifulSoup(driver.page_source, 'lxml')
+            soup = BeautifulSoup(driver.page_source, 'lxml')            
+            current_active = soup.find('li', {'class':'active-postab css-auzxq6-PosTab ew5makj0'})            
 
-            current_active = soup.find('li', {'class':'active-postab css-auzxq6-PosTab e9i53te0'})
             curr_res = str(counter) + '. ['+ current_active.find('em').text + '] ' + current_active.find('strong').text + ': '
             list_of_syn = soup.find('ul', {'class':'css-17d6qyx-WordGridLayoutBox et6tpn80'}).find_all('li')
 
