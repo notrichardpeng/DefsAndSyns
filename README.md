@@ -1,5 +1,17 @@
 # Defs and Syns
   
+NOTICE: 
+This program might become obsolete due to the update of the HTML structures of the scraped websites.
+
+This program only supports Chrome webbrowser.
+
+The chromedriver.exe included in this repository might get outdated from time to time due to new versions of Chrome 
+coming out. Please search for the newest version of Selenium chromedriver.exe on the internet when necessary.
+
+Maintenance of this repository is not frequent, since I am too busy with school :(
+
+---------------------------------------------------------------------------------------------------------------------
+
 Tool for looking up the definition of words, or the synonyms of them.  
 There is both the shell version (defsandsyns_shell.py), and a version that has a UI (defsandsyns.py).  
 
