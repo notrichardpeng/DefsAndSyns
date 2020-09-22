@@ -121,7 +121,7 @@ def initialize():
         global driver
         driver = webdriver.Chrome(os.path.dirname(__file__) + '\\chromedriver.exe', options=driver_opt)
     except Exception:
-        print('Cannot locate chromedriver.exe in the directory of this file')
+        print('Cannot locate the correct version of chromedriver.exe in the directory of this file')
         sys.exit(0)
 
 def quit_browser():
